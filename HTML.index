@@ -1,0 +1,1856 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <meta name="theme-color" content="#0f172a" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <title>FactoryPulse — Manufacturing & Operations ERP</title>
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Google Fonts: Inter -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Inter', 'system-ui', 'sans-serif'],
+          },
+          colors: {
+            brand: {
+              50: '#eef2ff',
+              100: '#e0e7ff',
+              500: '#6366f1',
+              600: '#4f46e5',
+              700: '#4338ca',
+              900: '#1e1b4b',
+            }
+          }
+        }
+      }
+    };
+  </script>
+  <style>
+    /* Custom scrollbar and mobile polish */
+    body {
+      font-family: 'Inter', sans-serif;
+      -webkit-tap-highlight-color: transparent;
+      background-color: #f8fafc;
+      color: #0f172a;
+      overflow-x: hidden;
+    }
+    .no-scrollbar::-webkit-scrollbar {
+      display: none;
+    }
+    .no-scrollbar {
+      -ms-overflow-style: none;
+      scrollbar-width: none;
+    }
+    .safe-pb {
+      padding-bottom: calc(5.5rem + env(safe-area-inset-bottom));
+    }
+    .nav-safe-pb {
+      padding-bottom: env(safe-area-inset-bottom);
+    }
+    @keyframes slideUp {
+      from { transform: translateY(100%); opacity: 0; }
+      to { transform: translateY(0); opacity: 1; }
+    }
+    .animate-slide-up {
+      animation: slideUp 0.25s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    }
+  </style>
+</head>
+<body class="bg-slate-50 text-slate-900 antialiased selection:bg-indigo-100 selection:text-indigo-900">
+
+  <!-- TOP STICKY APP HEADER -->
+  <header class="sticky top-0 z-30 bg-slate-900 text-white shadow-md">
+    <div class="max-w-3xl mx-auto px-4 py-3 flex items-center justify-between">
+      <div class="flex items-center gap-2.5">
+        <div class="w-9 h-9 rounded-xl bg-indigo-500 flex items-center justify-center shadow-inner">
+          <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 13.5l10.5-11.25L12 10.5h8.25L9.75 21.75 12 13.5H3.75z" />
+          </svg>
+        </div>
+        <div>
+          <h1 class="text-base font-extrabold tracking-tight leading-none">FactoryPulse</h1>
+          <p class="text-[11px] text-slate-400 font-medium mt-0.5" id="header-date">Operations & Cost Command</p>
+        </div>
+      </div>
+
+      <div class="flex items-center gap-2">
+        <button onclick="openSettingsModal()" class="p-2 rounded-xl bg-slate-800 hover:bg-slate-700 active:scale-95 transition text-slate-200" title="Backup & Settings" aria-label="Settings">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M10.343 3.94c.09-.542.56-.94 1.11-.94h1.093c.55 0 1.02.398 1.11.94l.149.894c.07.424.384.764.78.93.398.164.855.142 1.205-.108l.737-.527a1.125 1.125 0 011.45.12l.773.774c.39.389.44 1.002.12 1.45l-.527.737c-.25.35-.272.806-.107 1.204.165.397.505.71.93.78l.893.15c.543.09.94.56.94 1.109v1.094c0 .55-.397 1.02-.94 1.11l-.893.149c-.425.07-.765.383-.93.78-.165.398-.143.854.107 1.204l.527.738c.32.447.269 1.06-.12 1.45l-.774.773a1.125 1.125 0 01-1.449.12l-.738-.527c-.35-.25-.806-.272-1.203-.107-.397.165-.71.505-.781.929l-.149.894c-.09.542-.56.94-1.11.94h-1.094c-.55 0-1.019-.398-1.11-.94l-.148-.894c-.071-.424-.384-.764-.781-.93-.398-.164-.854-.142-1.204.108l-.738.527c-.447.32-1.06.269-1.45-.12l-.773-.774a1.125 1.125 0 01-.12-1.45l.527-.737c.25-.35.273-.806.108-1.204-.165-.397-.505-.71-.93-.78l-.894-.15c-.542-.09-.94-.56-.94-1.109v-1.094c0-.55.398-1.02.94-1.11l.894-.149c.424-.07.765-.383.93-.78.165-.398.143-.854-.107-1.204l-.527-.738a1.125 1.125 0 01.12-1.45l.773-.773a1.125 1.125 0 011.45-.12l.737.527c.35.25.807.272 1.204.107.397-.165.71-.505.78-.929l.15-.894z" />
+            <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+          </svg>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- TOAST NOTIFICATION BANNER -->
+  <div id="toast-container" class="fixed top-16 left-1/2 -translate-x-1/2 z-50 w-[92%] max-w-md pointer-events-none flex flex-col gap-2"></div>
+
+  <!-- MAIN CONTENT CONTAINER -->
+  <main id="app-content" class="max-w-3xl mx-auto px-4 pt-4 safe-pb">
+    <!-- Dynamic Tab Views Rendered Here -->
+  </main>
+
+  <!-- BOTTOM MOBILE NAVIGATION BAR -->
+  <nav class="fixed bottom-0 inset-x-0 z-30 bg-white border-t border-slate-200 shadow-[0_-4px_20px_rgba(15,23,42,0.06)] nav-safe-pb">
+    <div class="max-w-3xl mx-auto grid grid-cols-5 h-16">
+      <button onclick="switchTab('dashboard')" data-tab="dashboard" class="nav-btn flex flex-col items-center justify-center gap-1 text-indigo-600 font-semibold transition">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2.1" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M3 13.125C3 12.504 3.504 12 4.125 12h2.25c.621 0 1.125.504 1.125 1.125v6.75C7.5 20.496 6.996 21 6.375 21h-2.25A1.125 1.125 0 013 19.875v-6.75zM9.75 8.625c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125v11.25c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 01-1.125-1.125V8.625zM16.5 4.125c0-.621.504-1.125 1.125-1.125h2.25C20.496 3 21 3.504 21 4.125v15.75c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 01-1.125-1.125V4.125z" />
+        </svg>
+        <span class="text-[10px]">Home</span>
+      </button>
+
+      <button onclick="switchTab('inventory')" data-tab="inventory" class="nav-btn flex flex-col items-center justify-center gap-1 text-slate-500 hover:text-slate-900 font-medium transition">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M20.25 7.5l-.625 10.632a2.25 2.25 0 01-2.247 2.118H6.622a2.25 2.25 0 01-2.247-2.118L3.75 7.5M10 11.25h4M3.375 7.5h17.25c.621 0 1.125-.504 1.125-1.125v-1.5c0-.621-.504-1.125-1.125-1.125H3.375c-.621 0-1.125.504-1.125 1.125v1.5c0 .621.504 1.125 1.125 1.125z" />
+        </svg>
+        <span class="text-[10px]">Stock</span>
+      </button>
+
+      <button onclick="switchTab('production')" data-tab="production" class="nav-btn flex flex-col items-center justify-center gap-1 text-slate-500 hover:text-slate-900 font-medium transition">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M11.42 15.17L17.25 21A2.652 2.652 0 0021 17.25l-5.877-5.877M11.42 15.17l2.496-3.03c.317-.384.74-.626 1.208-.766M11.42 15.17l-4.655 5.653a2.548 2.548 0 11-3.586-3.586l6.837-5.63m5.108-.233c.55-.164 1.163-.188 1.743-.14a4.5 4.5 0 004.486-6.336l-3.276 3.277a3.004 3.004 0 01-2.25-2.25l3.276-3.276a4.5 4.5 0 00-6.336 4.486c.091 1.076-.071 2.264-.904 2.95l-.102.085m-1.745 1.437L5.909 7.5H4.5L2.25 3.75l1.5-1.5L7.5 4.5v1.409l4.26 4.26m-1.745 1.437l1.745-1.437m6.615 8.206L15.75 15.75M4.867 19.125h.008v.008h-.008v-.008z" />
+        </svg>
+        <span class="text-[10px]">Produce</span>
+      </button>
+
+      <button onclick="switchTab('rates')" data-tab="rates" class="nav-btn flex flex-col items-center justify-center gap-1 text-slate-500 hover:text-slate-900 font-medium transition">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M2.25 18L9 11.25l4.306 4.307a11.95 11.95 0 015.814-5.519l2.74-1.22m0 0l-5.94-2.28m5.94 2.28l-2.28 5.941" />
+        </svg>
+        <span class="text-[10px]">Rates</span>
+      </button>
+
+      <button onclick="switchTab('tasks')" data-tab="tasks" class="nav-btn flex flex-col items-center justify-center gap-1 text-slate-500 hover:text-slate-900 font-medium transition">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+        </svg>
+        <span class="text-[10px]">Tasks</span>
+      </button>
+    </div>
+  </nav>
+
+  <!-- MODAL OVERLAY CONTAINER -->
+  <div id="modal-root" class="fixed inset-0 z-50 hidden">
+    <div id="modal-backdrop" onclick="closeModal()" class="absolute inset-0 bg-slate-900/60 backdrop-blur-xs transition-opacity"></div>
+    <div id="modal-panel" class="absolute bottom-0 sm:bottom-auto sm:top-1/2 sm:left-1/2 sm:-translate-x-1/2 sm:-translate-y-1/2 w-full sm:max-w-lg bg-white rounded-t-3xl sm:rounded-2xl shadow-2xl max-h-[90vh] overflow-y-auto animate-slide-up">
+      <!-- Dynamic Modal Content -->
+    </div>
+  </div>
+
+  <script>
+    /**
+     * ============================================================================
+     * FACTORYPULSE — COMPLETE STATE MANAGEMENT & BUSINESS LOGIC
+     * ============================================================================
+     */
+
+    const STORAGE_KEY = 'factorypulse_v1_data';
+    const MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+    const UNITS = ['kg', 'm', 'rolls', 'pcs', 'boxes'];
+
+    // Default realistic manufacturing dataset (flexible multi-size/grade/quality)
+    function getDefaultData() {
+      return {
+        rawMaterials: [
+          {
+            id: 'rm-1',
+            name: 'PP Virgin Granules (Grade A)',
+            unit: 'kg',
+            stock: 1450,
+            dailyConsumption: 320,
+            // 12-month rate history (₹ per unit)
+            monthlyRates: [112, 114, 118, 116, 115, 119, 124, 122, 120, 118, 121, 125]
+          },
+          {
+            id: 'rm-2',
+            name: 'BOPP Jumbo Film Roll (45 Micron)',
+            unit: 'rolls',
+            stock: 28,
+            dailyConsumption: 6.5,
+            monthlyRates: [4200, 4150, 4150, 4300, 4450, 4400, 4350, 4280, 4280, 4320, 4390, 4310]
+          },
+          {
+            id: 'rm-3',
+            name: 'Acrylic Solvent Adhesive',
+            unit: 'kg',
+            stock: 410,
+            dailyConsumption: 95,
+            monthlyRates: [165, 168, 170, 170, 166, 162, 160, 164, 169, 172, 171, 168]
+          },
+          {
+            id: 'rm-4',
+            name: 'Corrugated Master Cartons (5-Ply)',
+            unit: 'pcs',
+            stock: 620,
+            dailyConsumption: 85,
+            monthlyRates: [34, 34, 35, 36, 36, 35, 35, 37, 38, 38, 37, 37]
+          }
+        ],
+        finishedSkus: [
+          {
+            id: 'sku-1',
+            name: 'Industrial Packing Tape',
+            size: '48mm x 65m',
+            grade: 'G-45 Industrial',
+            quality: 'Premium Export',
+            unit: 'boxes',
+            stock: 185,
+            dailyDispatch: 42,
+            sellingPrice: 1680,
+            landedCost: 1310,
+            avgCycleMinsPerUnit: 1.4,
+            primaryRawMaterialId: 'rm-2',
+            rawQtyPerUnit: 0.14
+          },
+          {
+            id: 'sku-2',
+            name: 'Industrial Packing Tape',
+            size: '72mm x 100m',
+            grade: 'G-52 Heavy Duty',
+            quality: 'Super Heavy',
+            unit: 'boxes',
+            stock: 74,
+            dailyDispatch: 28,
+            sellingPrice: 2450,
+            landedCost: 1940,
+            avgCycleMinsPerUnit: 1.9,
+            primaryRawMaterialId: 'rm-2',
+            rawQtyPerUnit: 0.21
+          },
+          {
+            id: 'sku-3',
+            name: 'HDPE Woven Sack',
+            size: '24" x 36"',
+            grade: 'UV-Stabilized',
+            quality: 'First Grade',
+            unit: 'pcs',
+            stock: 4800,
+            dailyDispatch: 1150,
+            sellingPrice: 28.5,
+            landedCost: 22.4,
+            avgCycleMinsPerUnit: 0.08,
+            primaryRawMaterialId: 'rm-1',
+            rawQtyPerUnit: 0.14
+          },
+          {
+            id: 'sku-4',
+            name: 'HDPE Woven Sack',
+            size: '18" x 28"',
+            grade: 'Standard Commercial',
+            quality: 'Economy',
+            unit: 'pcs',
+            stock: 2100,
+            dailyDispatch: 900,
+            sellingPrice: 19.0,
+            landedCost: 15.2,
+            avgCycleMinsPerUnit: 0.06,
+            primaryRawMaterialId: 'rm-1',
+            rawQtyPerUnit: 0.095
+          }
+        ],
+        productionLogs: [
+          {
+            id: 'prod-101',
+            date: new Date().toISOString().split('T')[0],
+            skuId: 'sku-1',
+            rawMaterialId: 'rm-2',
+            rawQtyUsed: 8.4,
+            rawRateAtTime: 4310,
+            qtyProduced: 60,
+            timeMinutes: 84,
+            labourCost: 1450,
+            transportCost: 920,
+            overheadCost: 680
+          },
+          {
+            id: 'prod-102',
+            date: new Date(Date.now() - 86400000).toISOString().split('T')[0],
+            skuId: 'sku-2',
+            rawMaterialId: 'rm-2',
+            rawQtyUsed: 8.4,
+            rawRateAtTime: 4310,
+            qtyProduced: 40,
+            timeMinutes: 76,
+            labourCost: 1320,
+            transportCost: 850,
+            overheadCost: 610
+          },
+          {
+            id: 'prod-103',
+            date: new Date(Date.now() - 172800000).toISOString().split('T')[0],
+            skuId: 'sku-3',
+            rawMaterialId: 'rm-1',
+            rawQtyUsed: 280,
+            rawRateAtTime: 125,
+            qtyProduced: 2000,
+            timeMinutes: 160,
+            labourCost: 2400,
+            transportCost: 1800,
+            overheadCost: 1200
+          }
+        ],
+        tasks: [
+          {
+            id: 't-1',
+            title: 'Verify morning slitting line speed on 48mm G-45 batch',
+            category: 'Production',
+            priority: 'High',
+            done: true
+          },
+          {
+            id: 't-2',
+            title: 'Lock PP Virgin Granules purchase rate with supplier before price hike',
+            category: 'Procurement',
+            priority: 'High',
+            done: false
+          },
+          {
+            id: 't-3',
+            title: 'Approve freight bill for Surat & Ahmedabad dispatch trucks',
+            category: 'Dispatch',
+            priority: 'Medium',
+            done: true
+          },
+          {
+            id: 't-4',
+            title: 'Audit weekly overtime labour cost vs output per shift',
+            category: 'Accounts',
+            priority: 'Medium',
+            done: false
+          },
+          {
+            id: 't-5',
+            title: 'Check BOPP 45-Micron jumbo roll buffer stock (4.3 days left)',
+            category: 'Procurement',
+            priority: 'High',
+            done: false
+          }
+        ],
+        selectedRateMaterialId: 'rm-1',
+        selectedMonthIndex: 11 // Dec (latest month)
+      };
+    }
+
+    // Application State
+    let state = loadState();
+    let activeTab = 'dashboard';
+    let inventorySubTab = 'finished'; // 'finished' | 'raw'
+    let inventorySearch = '';
+
+    function loadState() {
+      try {
+        const raw = localStorage.getItem(STORAGE_KEY);
+        if (raw) {
+          const parsed = JSON.parse(raw);
+          if (parsed && parsed.rawMaterials && parsed.finishedSkus) {
+            return parsed;
+          }
+        }
+      } catch (e) {
+        console.warn('Could not load saved state, using defaults.', e);
+      }
+      return getDefaultData();
+    }
+
+    function saveState() {
+      try {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+      } catch (e) {
+        showToast('Storage warning: Unable to persist data locally.', 'error');
+      }
+    }
+
+    // Formatting Helpers
+    function formatINR(num) {
+      if (isNaN(num) || num === null) return '₹0';
+      return '₹' + Number(num).toLocaleString('en-IN', {
+        minimumFractionDigits: num % 1 === 0 ? 0 : 2,
+        maximumFractionDigits: 2
+      });
+    }
+
+    function formatDaysLeft(stock, dailyRate) {
+      if (!dailyRate || dailyRate <= 0) return { days: 999, label: 'No usage', status: 'safe' };
+      const days = stock / dailyRate;
+      let label = '';
+      if (days < 1) {
+        const hrs = Math.max(1, Math.round(days * 24));
+        label = `${hrs} hrs left`;
+      } else if (days < 10) {
+        const wholeDays = Math.floor(days);
+        const hrs = Math.round((days - wholeDays) * 24);
+        label = hrs > 0 ? `${wholeDays}d ${hrs}h` : `${wholeDays} days`;
+      } else {
+        label = `${Math.round(days)} days`;
+      }
+
+      let status = 'safe';
+      if (days <= 3.5) status = 'critical';
+      else if (days <= 7) status = 'warning';
+
+      return { days, label, status };
+    }
+
+    function formatDuration(mins) {
+      if (!mins || mins <= 0) return '0m';
+      if (mins < 60) return `${Math.round(mins * 10) / 10} mins`;
+      const h = Math.floor(mins / 60);
+      const m = Math.round(mins % 60);
+      return m > 0 ? `${h}h ${m}m` : `${h}h`;
+    }
+
+    function getLatestMaterialRate(rm) {
+      if (!rm || !rm.monthlyRates || !rm.monthlyRates.length) return 0;
+      // Find last non-zero rate from Dec backwards
+      for (let i = rm.monthlyRates.length - 1; i >= 0; i--) {
+        if (rm.monthlyRates[i] > 0) return rm.monthlyRates[i];
+      }
+      return 0;
+    }
+
+    function showToast(message, type = 'success') {
+      const container = document.getElementById('toast-container');
+      const el = document.createElement('div');
+      const colors = type === 'error'
+        ? 'bg-rose-600 text-white'
+        : type === 'warning'
+        ? 'bg-amber-600 text-white'
+        : 'bg-slate-900 text-white border border-slate-700';
+
+      el.className = `${colors} px-4 py-2.5 rounded-xl shadow-lg text-xs font-semibold flex items-center justify-between gap-2 transition-all duration-300 transform translate-y-0 opacity-100`;
+      el.innerHTML = `<span>${message}</span>`;
+      container.appendChild(el);
+      setTimeout(() => {
+        el.style.opacity = '0';
+        el.style.transform = 'translateY(-8px)';
+        setTimeout(() => el.remove(), 300);
+      }, 2800);
+    }
+
+    // Navigation
+    function switchTab(tab) {
+      activeTab = tab;
+      document.querySelectorAll('.nav-btn').forEach(btn => {
+        const isTarget = btn.dataset.tab === tab;
+        btn.classList.toggle('text-indigo-600', isTarget);
+        btn.classList.toggle('font-semibold', isTarget);
+        btn.classList.toggle('text-slate-500', !isTarget);
+        btn.classList.toggle('font-medium', !isTarget);
+      });
+      renderApp();
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    function renderApp() {
+      const dateStr = new Date().toLocaleDateString('en-IN', {
+        weekday: 'short',
+        day: 'numeric',
+        month: 'short',
+        year: 'numeric'
+      });
+      document.getElementById('header-date').textContent = dateStr;
+
+      const root = document.getElementById('app-content');
+      if (activeTab === 'dashboard') root.innerHTML = renderDashboard();
+      else if (activeTab === 'inventory') root.innerHTML = renderInventory();
+      else if (activeTab === 'production') root.innerHTML = renderProduction();
+      else if (activeTab === 'rates') root.innerHTML = renderRateTracker();
+      else if (activeTab === 'tasks') root.innerHTML = renderTasks();
+    }
+
+    /**
+     * ============================================================================
+     * TAB 1: DASHBOARD (COMMAND CENTER)
+     * ============================================================================
+     */
+    function renderDashboard() {
+      // 1. Productivity Calculation
+      const totalTasks = state.tasks.length;
+      const doneTasks = state.tasks.filter(t => t.done).length;
+      const prodScore = totalTasks > 0 ? Math.round((doneTasks / totalTasks) * 100) : 0;
+
+      // 2. Depletion Alerts (Combine Raw Materials & Finished SKUs sorted by urgency)
+      const depletionItems = [];
+      state.rawMaterials.forEach(rm => {
+        const dep = formatDaysLeft(rm.stock, rm.dailyConsumption);
+        depletionItems.push({
+          type: 'Raw Material',
+          name: rm.name,
+          sub: `${rm.stock} ${rm.unit} left • ${rm.dailyConsumption} ${rm.unit}/day`,
+          ...dep
+        });
+      });
+      state.finishedSkus.forEach(sku => {
+        const dep = formatDaysLeft(sku.stock, sku.dailyDispatch);
+        depletionItems.push({
+          type: 'Finished SKU',
+          name: `${sku.name} (${sku.size})`,
+          sub: `${sku.grade} • ${sku.quality} • ${sku.stock} ${sku.unit} left`,
+          ...dep
+        });
+      });
+      depletionItems.sort((a, b) => a.days - b.days);
+
+      // 3. Today's Production Output & Margin
+      const todayStr = new Date().toISOString().split('T')[0];
+      const todayBatches = state.productionLogs.filter(p => p.date === todayStr);
+      const totalBatchesCount = state.productionLogs.length;
+      const displayBatches = todayBatches.length > 0 ? todayBatches : state.productionLogs.slice(0, 2);
+
+      // Average Net Margin across SKUs
+      let marginSum = 0;
+      state.finishedSkus.forEach(s => {
+        if (s.sellingPrice > 0) {
+          marginSum += ((s.sellingPrice - s.landedCost) / s.sellingPrice) * 100;
+        }
+      });
+      const avgMargin = state.finishedSkus.length > 0 ? (marginSum / state.finishedSkus.length).toFixed(1) : '0.0';
+
+      // Material Cost Trend (Current Month vs Previous Month across all Raw Materials)
+      let trendUpCount = 0;
+      let trendDownCount = 0;
+      state.rawMaterials.forEach(rm => {
+        const curr = rm.monthlyRates[11];
+        const prev = rm.monthlyRates[10];
+        if (curr > prev) trendUpCount++;
+        else if (curr < prev) trendDownCount++;
+      });
+
+      const trendBadge = trendUpCount > trendDownCount
+        ? `<span class="inline-flex items-center gap-0.5 text-xs font-bold text-rose-600 bg-rose-50 px-2 py-0.5 rounded-full">▲ ${trendUpCount} Rising</span>`
+        : trendDownCount > trendUpCount
+        ? `<span class="inline-flex items-center gap-0.5 text-xs font-bold text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded-full">▼ ${trendDownCount} Cooling</span>`
+        : `<span class="inline-flex items-center gap-0.5 text-xs font-bold text-slate-600 bg-slate-100 px-2 py-0.5 rounded-full">▬ Stable</span>`;
+
+      return `
+        <div class="space-y-4">
+          <!-- HERO PRODUCTIVITY & QUICK ACTIONS CARD -->
+          <div class="bg-gradient-to-br from-slate-900 via-slate-800 to-indigo-950 text-white rounded-2xl p-4 shadow-lg">
+            <div class="flex items-start justify-between gap-3">
+              <div>
+                <span class="text-[11px] uppercase tracking-wider font-semibold text-indigo-300">Daily Owner Productivity</span>
+                <div class="flex items-baseline gap-2 mt-1">
+                  <span class="text-3xl font-extrabold">${prodScore}%</span>
+                  <span class="text-xs text-slate-300">${doneTasks} of ${totalTasks} tasks completed</span>
+                </div>
+              </div>
+              <button onclick="switchTab('tasks')" class="px-3 py-1.5 rounded-xl bg-white/10 hover:bg-white/20 text-xs font-semibold transition">
+                View Tasks →
+              </button>
+            </div>
+            <!-- Progress Bar -->
+            <div class="w-full h-2.5 bg-slate-700/80 rounded-full overflow-hidden mt-3">
+              <div class="h-full bg-gradient-to-r from-indigo-400 to-emerald-400 rounded-full transition-all duration-500" style="width: ${prodScore}%"></div>
+            </div>
+
+            <!-- Quick Action Buttons -->
+            <div class="grid grid-cols-3 gap-2 mt-4 pt-3 border-t border-white/10">
+              <button onclick="openProductionModal()" class="flex flex-col items-center justify-center p-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-500 active:scale-95 transition text-center">
+                <span class="text-sm font-bold">+ Batch</span>
+                <span class="text-[10px] text-indigo-200">Log Output</span>
+              </button>
+              <button onclick="openDispatchModal()" class="flex flex-col items-center justify-center p-2.5 rounded-xl bg-white/10 hover:bg-white/15 active:scale-95 transition text-center">
+                <span class="text-sm font-bold">- Dispatch</span>
+                <span class="text-[10px] text-slate-300">Update Stock</span>
+              </button>
+              <button onclick="switchTab('rates')" class="flex flex-col items-center justify-center p-2.5 rounded-xl bg-white/10 hover:bg-white/15 active:scale-95 transition text-center">
+                <span class="text-sm font-bold">₹ Rates</span>
+                <span class="text-[10px] text-slate-300">Yearly Trend</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- 3 KPI METRIC CARDS -->
+          <div class="grid grid-cols-3 gap-2.5">
+            <div class="bg-white rounded-2xl p-3 border border-slate-200/80 shadow-xs">
+              <p class="text-[11px] font-medium text-slate-500">Avg Net Margin</p>
+              <p class="text-lg font-extrabold text-emerald-600 mt-0.5">${avgMargin}%</p>
+              <p class="text-[10px] text-slate-400 mt-0.5">After transport & labour</p>
+            </div>
+            <div class="bg-white rounded-2xl p-3 border border-slate-200/80 shadow-xs">
+              <p class="text-[11px] font-medium text-slate-500">Material Rates</p>
+              <div class="mt-1">${trendBadge}</div>
+              <p class="text-[10px] text-slate-400 mt-1">vs last month</p>
+            </div>
+            <div class="bg-white rounded-2xl p-3 border border-slate-200/80 shadow-xs">
+              <p class="text-[11px] font-medium text-slate-500">Logged Runs</p>
+              <p class="text-lg font-extrabold text-slate-900 mt-0.5">${totalBatchesCount}</p>
+              <p class="text-[10px] text-slate-400 mt-0.5">${todayBatches.length} run(s) today</p>
+            </div>
+          </div>
+
+          <!-- STOCKOUT & DEPLETION COUNTDOWN ("IN HOW MUCH TIME IT GETS OVER") -->
+          <div class="bg-white rounded-2xl p-4 border border-slate-200/80 shadow-xs">
+            <div class="flex items-center justify-between mb-3">
+              <div>
+                <h2 class="text-sm font-extrabold text-slate-900">Stock Depletion Countdown</h2>
+                <p class="text-xs text-slate-500">Exact time before stock gets over at current run-rate</p>
+              </div>
+              <button onclick="switchTab('inventory')" class="text-xs font-bold text-indigo-600 hover:text-indigo-700">All Stock →</button>
+            </div>
+
+            <div class="space-y-2.5">
+              ${depletionItems.slice(0, 5).map(item => {
+                const badgeStyle = item.status === 'critical'
+                  ? 'bg-rose-100 text-rose-700 border-rose-200'
+                  : item.status === 'warning'
+                  ? 'bg-amber-100 text-amber-800 border-amber-200'
+                  : 'bg-emerald-50 text-emerald-700 border-emerald-200';
+                const barColor = item.status === 'critical'
+                  ? 'bg-rose-500'
+                  : item.status === 'warning'
+                  ? 'bg-amber-500'
+                  : 'bg-emerald-500';
+                const pct = Math.min(100, Math.max(8, (item.days / 15) * 100));
+
+                return `
+                  <div class="p-3 rounded-xl bg-slate-50 border border-slate-100">
+                    <div class="flex items-start justify-between gap-2">
+                      <div class="min-w-0">
+                        <div class="flex items-center gap-1.5">
+                          <span class="text-[10px] font-bold uppercase px-1.5 py-0.5 rounded bg-slate-200/80 text-slate-700">${item.type === 'Raw Material' ? 'RAW' : 'SKU'}</span>
+                          <h3 class="text-xs font-bold text-slate-900 truncate">${item.name}</h3>
+                        </div>
+                        <p class="text-[11px] text-slate-500 mt-0.5 truncate">${item.sub}</p>
+                      </div>
+                      <span class="shrink-0 text-xs font-extrabold px-2.5 py-1 rounded-lg border ${badgeStyle}">
+                        ${item.label}
+                      </span>
+                    </div>
+                    <div class="w-full h-1.5 bg-slate-200 rounded-full overflow-hidden mt-2">
+                      <div class="h-full ${barColor} rounded-full" style="width: ${pct}%"></div>
+                    </div>
+                  </div>
+                `;
+              }).join('')}
+            </div>
+          </div>
+
+          <!-- RECENT PRODUCTION SPEED & TRUE COST SNAPSHOT -->
+          <div class="bg-white rounded-2xl p-4 border border-slate-200/80 shadow-xs">
+            <div class="flex items-center justify-between mb-3">
+              <div>
+                <h2 class="text-sm font-extrabold text-slate-900">Recent Production & True Rates</h2>
+                <p class="text-xs text-slate-500">Cycle time + Raw + Labour + Transport breakdown</p>
+              </div>
+              <button onclick="switchTab('production')" class="text-xs font-bold text-indigo-600 hover:text-indigo-700">History →</button>
+            </div>
+            <div class="space-y-2.5">
+              ${displayBatches.map(batch => {
+                const sku = state.finishedSkus.find(s => s.id === batch.skuId) || { name: 'Unknown SKU', size: '', grade: '', unit: 'units' };
+                const rawCost = batch.rawQtyUsed * batch.rawRateAtTime;
+                const totalBatchCost = rawCost + batch.labourCost + batch.transportCost + (batch.overheadCost || 0);
+                const trueUnitCost = batch.qtyProduced > 0 ? totalBatchCost / batch.qtyProduced : 0;
+                const minsPerUnit = batch.qtyProduced > 0 ? (batch.timeMinutes / batch.qtyProduced).toFixed(2) : 0;
+
+                return `
+                  <div class="p-3 rounded-xl border border-slate-200/80 bg-white">
+                    <div class="flex items-center justify-between">
+                      <div>
+                        <p class="text-xs font-bold text-slate-900">${sku.name} <span class="text-indigo-600">(${sku.size})</span></p>
+                        <p class="text-[11px] text-slate-500">${sku.grade} • Produced <strong>${batch.qtyProduced} ${sku.unit}</strong> in ${formatDuration(batch.timeMinutes)}</p>
+                      </div>
+                      <div class="text-right">
+                        <p class="text-xs font-extrabold text-slate-900">${formatINR(trueUnitCost)}<span class="text-[10px] font-normal text-slate-500">/${sku.unit}</span></p>
+                        <p class="text-[10px] font-semibold text-indigo-600">${minsPerUnit} min/${sku.unit}</p>
+                      </div>
+                    </div>
+                  </div>
+                `;
+              }).join('')}
+            </div>
+          </div>
+        </div>
+      `;
+    }
+
+    /**
+     * ============================================================================
+     * TAB 2: INVENTORY & SKUs (MULTI-SIZE / GRADE / QUALITY + DEPLETION)
+     * ============================================================================
+     */
+    function renderInventory() {
+      const q = inventorySearch.trim().toLowerCase();
+
+      const filteredFinished = state.finishedSkus.filter(s =>
+        !q ||
+        s.name.toLowerCase().includes(q) ||
+        s.size.toLowerCase().includes(q) ||
+        s.grade.toLowerCase().includes(q) ||
+        s.quality.toLowerCase().includes(q)
+      );
+
+      const filteredRaw = state.rawMaterials.filter(r =>
+        !q || r.name.toLowerCase().includes(q)
+      );
+
+      return `
+        <div class="space-y-4">
+          <!-- Header & Add Action -->
+          <div class="flex items-center justify-between gap-2">
+            <div>
+              <h2 class="text-lg font-extrabold text-slate-900">Inventory & SKUs</h2>
+              <p class="text-xs text-slate-500">Track stock by Size, Grade, Quality & depletion speed</p>
+            </div>
+            <button onclick="${inventorySubTab === 'finished' ? 'openAddSkuModal()' : 'openAddRawModal()'}" class="px-3.5 py-2 rounded-xl bg-indigo-600 hover:bg-indigo-700 active:scale-95 text-white text-xs font-bold shadow-sm transition">
+              + ${inventorySubTab === 'finished' ? 'New SKU' : 'New Material'}
+            </button>
+          </div>
+
+          <!-- Sub-Tabs Switcher -->
+          <div class="grid grid-cols-2 p-1 bg-slate-200/80 rounded-xl">
+            <button onclick="inventorySubTab='finished'; renderApp();" class="py-2 text-xs font-bold rounded-lg transition ${inventorySubTab === 'finished' ? 'bg-white text-slate-900 shadow-xs' : 'text-slate-600'}">
+              Finished Products (${state.finishedSkus.length})
+            </button>
+            <button onclick="inventorySubTab='raw'; renderApp();" class="py-2 text-xs font-bold rounded-lg transition ${inventorySubTab === 'raw' ? 'bg-white text-slate-900 shadow-xs' : 'text-slate-600'}">
+              Raw Materials (${state.rawMaterials.length})
+            </button>
+          </div>
+
+          <!-- Search Filter -->
+          <div class="relative">
+            <input
+              type="text"
+              value="${inventorySearch}"
+              oninput="inventorySearch = this.value; renderApp();"
+              placeholder="${inventorySubTab === 'finished' ? 'Search by product, size (48mm), grade, or quality...' : 'Search raw materials...'}"
+              class="w-full pl-9 pr-4 py-2.5 bg-white border border-slate-200 rounded-xl text-xs font-medium focus:outline-none focus:ring-2 focus:ring-indigo-500"
+            />
+            <svg class="w-4 h-4 text-slate-400 absolute left-3 top-3" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z" />
+            </svg>
+          </div>
+
+          ${inventorySubTab === 'finished' ? `
+            <!-- FINISHED PRODUCTS LIST -->
+            <div class="space-y-3">
+              ${filteredFinished.length === 0 ? `<p class="text-center text-xs text-slate-400 py-8">No matching finished SKUs found.</p>` : ''}
+              ${filteredFinished.map(sku => {
+                const dep = formatDaysLeft(sku.stock, sku.dailyDispatch);
+                const margin = sku.sellingPrice > 0 ? (((sku.sellingPrice - sku.landedCost) / sku.sellingPrice) * 100).toFixed(1) : 0;
+                const badgeClass = dep.status === 'critical'
+                  ? 'bg-rose-100 text-rose-700'
+                  : dep.status === 'warning'
+                  ? 'bg-amber-100 text-amber-800'
+                  : 'bg-emerald-100 text-emerald-700';
+
+                return `
+                  <div class="bg-white rounded-2xl p-4 border border-slate-200/90 shadow-xs space-y-3">
+                    <div class="flex items-start justify-between gap-2">
+                      <div>
+                        <h3 class="text-sm font-extrabold text-slate-900">${sku.name}</h3>
+                        <div class="flex flex-wrap gap-1.5 mt-1">
+                          <span class="text-[11px] font-semibold px-2 py-0.5 rounded-md bg-indigo-50 text-indigo-700">Size: ${sku.size}</span>
+                          <span class="text-[11px] font-semibold px-2 py-0.5 rounded-md bg-slate-100 text-slate-700">Grade: ${sku.grade}</span>
+                          <span class="text-[11px] font-semibold px-2 py-0.5 rounded-md bg-purple-50 text-purple-700">${sku.quality}</span>
+                        </div>
+                      </div>
+                      <span class="shrink-0 text-xs font-extrabold px-2.5 py-1 rounded-lg ${badgeClass}">
+                        Over in ${dep.label}
+                      </span>
+                    </div>
+
+                    <div class="grid grid-cols-3 gap-2 pt-2 border-t border-slate-100 text-xs">
+                      <div>
+                        <p class="text-[10px] text-slate-400 uppercase font-semibold">Current Stock</p>
+                        <p class="font-extrabold text-slate-900 mt-0.5">${sku.stock} <span class="font-medium text-slate-500">${sku.unit}</span></p>
+                        <p class="text-[10px] text-slate-500">Out: ${sku.dailyDispatch}/day</p>
+                      </div>
+                      <div>
+                        <p class="text-[10px] text-slate-400 uppercase font-semibold">True Actual Cost</p>
+                        <p class="font-extrabold text-slate-900 mt-0.5">${formatINR(sku.landedCost)}</p>
+                        <p class="text-[10px] text-emerald-600 font-semibold">Sell: ${formatINR(sku.sellingPrice)} (${margin}%)</p>
+                      </div>
+                      <div>
+                        <p class="text-[10px] text-slate-400 uppercase font-semibold">Prod. Speed</p>
+                        <p class="font-extrabold text-indigo-600 mt-0.5">${sku.avgCycleMinsPerUnit} min</p>
+                        <p class="text-[10px] text-slate-500">per ${sku.unit}</p>
+                      </div>
+                    </div>
+
+                    <div class="flex items-center gap-2 pt-1">
+                      <button onclick="openDispatchModal('${sku.id}')" class="flex-1 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-800 text-xs font-bold transition">
+                        Log Sale / Dispatch
+                      </button>
+                      <button onclick="openProductionModal('${sku.id}')" class="flex-1 py-2 rounded-xl bg-indigo-50 hover:bg-indigo-100 text-indigo-700 text-xs font-bold transition">
+                        + Produce Batch
+                      </button>
+                    </div>
+                  </div>
+                `;
+              }).join('')}
+            </div>
+          ` : `
+            <!-- RAW MATERIALS LIST -->
+            <div class="space-y-3">
+              ${filteredRaw.length === 0 ? `<p class="text-center text-xs text-slate-400 py-8">No matching raw materials found.</p>` : ''}
+              ${filteredRaw.map(rm => {
+                const dep = formatDaysLeft(rm.stock, rm.dailyConsumption);
+                const latestRate = getLatestMaterialRate(rm);
+                const prevRate = rm.monthlyRates[10] || latestRate;
+                const diff = latestRate - prevRate;
+                const badgeClass = dep.status === 'critical'
+                  ? 'bg-rose-100 text-rose-700'
+                  : dep.status === 'warning'
+                  ? 'bg-amber-100 text-amber-800'
+                  : 'bg-emerald-100 text-emerald-700';
+
+                return `
+                  <div class="bg-white rounded-2xl p-4 border border-slate-200/90 shadow-xs space-y-3">
+                    <div class="flex items-start justify-between gap-2">
+                      <div>
+                        <h3 class="text-sm font-extrabold text-slate-900">${rm.name}</h3>
+                        <p class="text-xs text-slate-500 mt-0.5">Daily Usage: <strong>${rm.dailyConsumption} ${rm.unit}/day</strong></p>
+                      </div>
+                      <span class="shrink-0 text-xs font-extrabold px-2.5 py-1 rounded-lg ${badgeClass}">
+                        Over in ${dep.label}
+                      </span>
+                    </div>
+
+                    <div class="grid grid-cols-3 gap-2 pt-2 border-t border-slate-100 text-xs">
+                      <div>
+                        <p class="text-[10px] text-slate-400 uppercase font-semibold">Available Stock</p>
+                        <p class="font-extrabold text-slate-900 mt-0.5">${rm.stock} ${rm.unit}</p>
+                      </div>
+                      <div>
+                        <p class="text-[10px] text-slate-400 uppercase font-semibold">Current Rate</p>
+                        <p class="font-extrabold text-slate-900 mt-0.5">${formatINR(latestRate)}/${rm.unit}</p>
+                      </div>
+                      <div>
+                        <p class="text-[10px] text-slate-400 uppercase font-semibold">MoM Trend</p>
+                        <p class="font-extrabold mt-0.5 ${diff > 0 ? 'text-rose-600' : diff < 0 ? 'text-emerald-600' : 'text-slate-500'}">
+                          ${diff > 0 ? `▲ +${formatINR(diff)}` : diff < 0 ? `▼ ${formatINR(diff)}` : '▬ Same'}
+                        </p>
+                      </div>
+                    </div>
+
+                    <div class="flex items-center gap-2 pt-1">
+                      <button onclick="openRestockRawModal('${rm.id}')" class="flex-1 py-2 rounded-xl bg-emerald-50 hover:bg-emerald-100 text-emerald-700 text-xs font-bold transition">
+                        + Add Purchase Stock
+                      </button>
+                      <button onclick="state.selectedRateMaterialId='${rm.id}'; switchTab('rates');" class="flex-1 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-800 text-xs font-bold transition">
+                        View Yearly Rates
+                      </button>
+                    </div>
+                  </div>
+                `;
+              }).join('')}
+            </div>
+          `}
+        </div>
+      `;
+    }
+
+    /**
+     * ============================================================================
+     * TAB 3: PRODUCTION TIME & TRUE COSTING (RAW + LABOUR + TRANSPORT + OVERHEAD)
+     * ============================================================================
+     */
+    function renderProduction() {
+      return `
+        <div class="space-y-4">
+          <div class="flex items-center justify-between gap-2">
+            <div>
+              <h2 class="text-lg font-extrabold text-slate-900">Production & True Costing</h2>
+              <p class="text-xs text-slate-500">Cycle time per SKU + Raw, Labour & Freight breakdown</p>
+            </div>
+            <button onclick="openProductionModal()" class="px-3.5 py-2 rounded-xl bg-indigo-600 hover:bg-indigo-700 active:scale-95 text-white text-xs font-bold shadow-sm transition">
+              + Log Batch
+            </button>
+          </div>
+
+          <!-- CYCLE TIME BENCHMARK ACROSS SIZES & GRADES -->
+          <div class="bg-white rounded-2xl p-4 border border-slate-200/90 shadow-xs">
+            <h3 class="text-xs font-extrabold uppercase tracking-wider text-slate-500 mb-3">Production Speed by Size & Grade</h3>
+            <div class="space-y-2.5">
+              ${state.finishedSkus.map(sku => {
+                const unitsPerHour = sku.avgCycleMinsPerUnit > 0 ? Math.round(60 / sku.avgCycleMinsPerUnit) : 0;
+                return `
+                  <div class="flex items-center justify-between p-2.5 rounded-xl bg-slate-50 border border-slate-100">
+                    <div class="min-w-0 pr-2">
+                      <p class="text-xs font-bold text-slate-900 truncate">${sku.name} • <span class="text-indigo-600">${sku.size}</span></p>
+                      <p class="text-[11px] text-slate-500">${sku.grade} (${sku.quality})</p>
+                    </div>
+                    <div class="text-right shrink-0">
+                      <p class="text-xs font-extrabold text-slate-900">${sku.avgCycleMinsPerUnit} min/${sku.unit}</p>
+                      <p class="text-[10px] text-emerald-600 font-semibold">~${unitsPerHour} ${sku.unit}/hr</p>
+                    </div>
+                  </div>
+                `;
+              }).join('')}
+            </div>
+          </div>
+
+          <!-- DETAILED PRODUCTION BATCH LOGS -->
+          <div class="space-y-3">
+            <h3 class="text-xs font-extrabold uppercase tracking-wider text-slate-500">Production Batch Ledger (${state.productionLogs.length})</h3>
+            ${state.productionLogs.map(batch => {
+              const sku = state.finishedSkus.find(s => s.id === batch.skuId) || { name: 'Deleted SKU', size: '-', grade: '-', unit: 'units' };
+              const rm = state.rawMaterials.find(r => r.id === batch.rawMaterialId) || { name: 'Raw Material', unit: 'units' };
+
+              const rawCost = batch.rawQtyUsed * batch.rawRateAtTime;
+              const labour = batch.labourCost || 0;
+              const transport = batch.transportCost || 0;
+              const overhead = batch.overheadCost || 0;
+              const totalBatchCost = rawCost + labour + transport + overhead;
+              const trueUnitCost = batch.qtyProduced > 0 ? totalBatchCost / batch.qtyProduced : 0;
+              const minsPerUnit = batch.qtyProduced > 0 ? (batch.timeMinutes / batch.qtyProduced).toFixed(2) : 0;
+
+              // Percentages for stacked cost bar
+              const rawPct = totalBatchCost > 0 ? (rawCost / totalBatchCost) * 100 : 0;
+              const labPct = totalBatchCost > 0 ? (labour / totalBatchCost) * 100 : 0;
+              const trnPct = totalBatchCost > 0 ? (transport / totalBatchCost) * 100 : 0;
+              const ovhPct = totalBatchCost > 0 ? (overhead / totalBatchCost) * 100 : 0;
+
+              return `
+                <div class="bg-white rounded-2xl p-4 border border-slate-200/90 shadow-xs space-y-3">
+                  <div class="flex items-start justify-between gap-2">
+                    <div>
+                      <span class="text-[10px] font-bold text-slate-400">${batch.date}</span>
+                      <h4 class="text-sm font-extrabold text-slate-900">${sku.name} (${sku.size})</h4>
+                      <p class="text-[11px] text-slate-500">${sku.grade} • Used ${batch.rawQtyUsed} ${rm.unit} of ${rm.name}</p>
+                    </div>
+                    <div class="text-right">
+                      <span class="inline-block px-2.5 py-1 rounded-lg bg-indigo-50 text-indigo-700 text-xs font-extrabold">
+                        ${formatINR(trueUnitCost)} / ${sku.unit}
+                      </span>
+                      <p class="text-[10px] text-slate-500 mt-1">Actual Product Rate</p>
+                    </div>
+                  </div>
+
+                  <!-- Output & Cycle Speed Row -->
+                  <div class="grid grid-cols-3 gap-2 p-2.5 rounded-xl bg-slate-50 text-xs">
+                    <div>
+                      <span class="text-[10px] text-slate-400 block">Output</span>
+                      <strong class="text-slate-900">${batch.qtyProduced} ${sku.unit}</strong>
+                    </div>
+                    <div>
+                      <span class="text-[10px] text-slate-400 block">Total Time</span>
+                      <strong class="text-slate-900">${formatDuration(batch.timeMinutes)}</strong>
+                    </div>
+                    <div>
+                      <span class="text-[10px] text-slate-400 block">Speed</span>
+                      <strong class="text-indigo-600">${minsPerUnit} min/${sku.unit}</strong>
+                    </div>
+                  </div>
+
+                  <!-- Visual Cost Breakdown Stacked Bar -->
+                  <div>
+                    <div class="flex justify-between text-[11px] font-semibold mb-1">
+                      <span class="text-slate-600">Batch Cost Breakdown</span>
+                      <span class="text-slate-900 font-extrabold">Total: ${formatINR(totalBatchCost)}</span>
+                    </div>
+                    <div class="w-full h-2.5 rounded-full overflow-hidden flex bg-slate-100">
+                      <div style="width: ${rawPct}%" class="bg-indigo-500" title="Raw Material"></div>
+                      <div style="width: ${labPct}%" class="bg-amber-500" title="Labour"></div>
+                      <div style="width: ${trnPct}%" class="bg-emerald-500" title="Transportation"></div>
+                      <div style="width: ${ovhPct}%" class="bg-slate-400" title="Overhead"></div>
+                    </div>
+                    <div class="grid grid-cols-2 sm:grid-cols-4 gap-1.5 mt-2 text-[11px]">
+                      <div class="flex items-center gap-1.5">
+                        <span class="w-2 h-2 rounded-full bg-indigo-500"></span>
+                        <span class="text-slate-500">Raw: <strong>${formatINR(rawCost)}</strong></span>
+                      </div>
+                      <div class="flex items-center gap-1.5">
+                        <span class="w-2 h-2 rounded-full bg-amber-500"></span>
+                        <span class="text-slate-500">Labour: <strong>${formatINR(labour)}</strong></span>
+                      </div>
+                      <div class="flex items-center gap-1.5">
+                        <span class="w-2 h-2 rounded-full bg-emerald-500"></span>
+                        <span class="text-slate-500">Transport: <strong>${formatINR(transport)}</strong></span>
+                      </div>
+                      <div class="flex items-center gap-1.5">
+                        <span class="w-2 h-2 rounded-full bg-slate-400"></span>
+                        <span class="text-slate-500">Overhead: <strong>${formatINR(overhead)}</strong></span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              `;
+            }).join('')}
+          </div>
+        </div>
+      `;
+    }
+
+    /**
+     * ============================================================================
+     * TAB 4: RATE TRACKER (12-MONTH RAW MATERIAL & PRODUCT RATE IMPACT)
+     * ============================================================================
+     */
+    function renderRateTracker() {
+      const selectedRm = state.rawMaterials.find(r => r.id === state.selectedRateMaterialId) || state.rawMaterials[0];
+      if (!selectedRm) return `<p class="text-center text-xs text-slate-500 py-8">Add a raw material first to track annual rates.</p>`;
+
+      const rates = selectedRm.monthlyRates;
+      const minRate = Math.min(...rates);
+      const maxRate = Math.max(...rates);
+      const janRate = rates[0];
+      const decRate = rates[11];
+      const yearChangePct = janRate > 0 ? (((decRate - janRate) / janRate) * 100).toFixed(1) : '0.0';
+
+      // Build Interactive SVG Line Chart
+      const svgWidth = 600;
+      const svgHeight = 190;
+      const padX = 28;
+      const padY = 26;
+      const plotW = svgWidth - padX * 2;
+      const plotH = svgHeight - padY * 2;
+      const range = maxRate - minRate || 1;
+
+      const points = rates.map((val, idx) => {
+        const x = padX + (idx / 11) * plotW;
+        const y = padY + plotH - ((val - minRate) / range) * plotH;
+        return { x, y, val, month: MONTHS[idx], idx };
+      });
+
+      const polylinePoints = points.map(p => `${p.x},${p.y}`).join(' ');
+      const areaPoints = `${points[0].x},${svgHeight - padY} ${polylinePoints} ${points[11].x},${svgHeight - padY}`;
+
+      // Linked Finished SKUs to show how raw material rate affects actual product rate
+      const linkedSkus = state.finishedSkus.filter(s => s.primaryRawMaterialId === selectedRm.id);
+
+      return `
+        <div class="space-y-4">
+          <div>
+            <h2 class="text-lg font-extrabold text-slate-900">Annual Rate & Cost Trends</h2>
+            <p class="text-xs text-slate-500">Compare monthly raw material spikes/drops & impact on actual product cost</p>
+          </div>
+
+          <!-- Raw Material Selector Pills -->
+          <div class="flex gap-2 overflow-x-auto no-scrollbar pb-1">
+            ${state.rawMaterials.map(rm => {
+              const active = rm.id === selectedRm.id;
+              return `
+                <button onclick="state.selectedRateMaterialId='${rm.id}'; renderApp();" class="shrink-0 px-3.5 py-2 rounded-xl text-xs font-bold border transition ${active ? 'bg-slate-900 text-white border-slate-900 shadow-xs' : 'bg-white text-slate-700 border-slate-200 hover:bg-slate-50'}">
+                  ${rm.name}
+                </button>
+              `;
+            }).join('')}
+          </div>
+
+          <!-- YEARLY SUMMARY & SVG TREND CHART CARD -->
+          <div class="bg-white rounded-2xl p-4 border border-slate-200/90 shadow-xs space-y-3">
+            <div class="flex items-start justify-between gap-2">
+              <div>
+                <h3 class="text-sm font-extrabold text-slate-900">${selectedRm.name}</h3>
+                <p class="text-xs text-slate-500">12-Month Rate Curve (₹ per ${selectedRm.unit})</p>
+              </div>
+              <div class="text-right">
+                <span class="text-xs font-extrabold px-2.5 py-1 rounded-lg ${Number(yearChangePct) > 0 ? 'bg-rose-50 text-rose-700' : Number(yearChangePct) < 0 ? 'bg-emerald-50 text-emerald-700' : 'bg-slate-100 text-slate-700'}">
+                  Jan → Dec: ${Number(yearChangePct) > 0 ? '+' : ''}${yearChangePct}%
+                </span>
+              </div>
+            </div>
+
+            <!-- Min / Max / Current Pills -->
+            <div class="grid grid-cols-3 gap-2 text-center bg-slate-50 p-2.5 rounded-xl border border-slate-100">
+              <div>
+                <span class="text-[10px] uppercase font-semibold text-slate-400 block">Lowest Month</span>
+                <strong class="text-xs text-emerald-600">${formatINR(minRate)}</strong>
+              </div>
+              <div>
+                <span class="text-[10px] uppercase font-semibold text-slate-400 block">Highest Month</span>
+                <strong class="text-xs text-rose-600">${formatINR(maxRate)}</strong>
+              </div>
+              <div>
+                <span class="text-[10px] uppercase font-semibold text-slate-400 block">Latest (Dec)</span>
+                <strong class="text-xs text-slate-900">${formatINR(decRate)}</strong>
+              </div>
+            </div>
+
+            <!-- Responsive SVG Line Chart -->
+            <div class="w-full overflow-hidden pt-1">
+              <svg viewBox="0 0 ${svgWidth} ${svgHeight}" class="w-full h-auto overflow-visible">
+                <defs>
+                  <linearGradient id="rateGrad" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="0%" stop-color="#4f46e5" stop-opacity="0.22" />
+                    <stop offset="100%" stop-color="#4f46e5" stop-opacity="0.0" />
+                  </linearGradient>
+                </defs>
+                <!-- Horizontal Grid Lines -->
+                <line x1="${padX}" y1="${padY}" x2="${svgWidth - padX}" y2="${padY}" stroke="#e2e8f0" stroke-dasharray="4" />
+                <line x1="${padX}" y1="${padY + plotH / 2}" x2="${svgWidth - padX}" y2="${padY + plotH / 2}" stroke="#e2e8f0" stroke-dasharray="4" />
+                <line x1="${padX}" y1="${svgHeight - padY}" x2="${svgWidth - padX}" y2="${svgHeight - padY}" stroke="#e2e8f0" />
+
+                <!-- Area Fill & Line -->
+                <polygon points="${areaPoints}" fill="url(#rateGrad)" />
+                <polyline fill="none" stroke="#4f46e5" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" points="${polylinePoints}" />
+
+                <!-- Data Points & Month Labels -->
+                ${points.map((p, i) => {
+                  const prev = i > 0 ? points[i - 1].val : p.val;
+                  const dotColor = p.val > prev ? '#e11d48' : p.val < prev ? '#059669' : '#64748b';
+                  return `
+                    <g>
+                      <circle cx="${p.x}" cy="${p.y}" r="4.5" fill="${dotColor}" stroke="#ffffff" stroke-width="1.5" />
+                      <text x="${p.x}" y="${svgHeight - 6}" text-anchor="middle" font-size="10" font-weight="600" fill="#64748b">${p.month}</text>
+                    </g>
+                  `;
+                }).join('')}
+              </svg>
+            </div>
+          </div>
+
+          <!-- IMPACT ON ACTUAL FINISHED PRODUCT RATE -->
+          ${linkedSkus.length > 0 ? `
+            <div class="bg-indigo-50/70 rounded-2xl p-4 border border-indigo-100 space-y-2.5">
+              <h3 class="text-xs font-extrabold uppercase tracking-wider text-indigo-900">Impact on Actual Product Rate</h3>
+              <p class="text-[11px] text-indigo-700">How ${selectedRm.name} price shifts change your finished SKU landed cost (including Labour & Transport):</p>
+              ${linkedSkus.map(sku => {
+                const rawCostAtMin = sku.rawQtyPerUnit * minRate;
+                const rawCostAtDec = sku.rawQtyPerUnit * decRate;
+                const nonRawOverhead = Math.max(0, sku.landedCost - rawCostAtDec);
+                const productCostAtLow = rawCostAtMin + nonRawOverhead;
+                const productCostNow = rawCostAtDec + nonRawOverhead;
+                const diff = productCostNow - productCostAtLow;
+
+                return `
+                  <div class="bg-white rounded-xl p-3 border border-indigo-100 flex items-center justify-between gap-2">
+                    <div>
+                      <p class="text-xs font-bold text-slate-900">${sku.name} (${sku.size})</p>
+                      <p class="text-[11px] text-slate-500">At lowest material month: <strong>${formatINR(productCostAtLow)}/${sku.unit}</strong></p>
+                    </div>
+                    <div class="text-right">
+                      <p class="text-xs font-extrabold text-slate-900">Now: ${formatINR(productCostNow)}/${sku.unit}</p>
+                      <p class="text-[10px] font-bold ${diff > 0 ? 'text-rose-600' : 'text-emerald-600'}">
+                        ${diff > 0 ? `+${formatINR(diff)} cost impact` : 'At lowest cost'}
+                      </p>
+                    </div>
+                  </div>
+                `;
+              }).join('')}
+            </div>
+          ` : ''}
+
+          <!-- MONTH-BY-MONTH LEDGER TABLE (EDITABLE RATES) -->
+          <div class="bg-white rounded-2xl border border-slate-200/90 shadow-xs overflow-hidden">
+            <div class="px-4 py-3 border-b border-slate-100 flex items-center justify-between">
+              <div>
+                <h3 class="text-xs font-extrabold uppercase tracking-wider text-slate-700">Monthly Rate Ledger (Tap Rate to Edit)</h3>
+              </div>
+              <span class="text-[11px] text-slate-400">₹ / ${selectedRm.unit}</span>
+            </div>
+            <div class="divide-y divide-slate-100">
+              ${MONTHS.map((m, idx) => {
+                const rate = rates[idx];
+                const prev = idx > 0 ? rates[idx - 1] : rate;
+                const diff = rate - prev;
+                const pct = prev > 0 ? ((diff / prev) * 100).toFixed(1) : '0.0';
+
+                let statusHtml = `<span class="text-xs font-semibold text-slate-400">▬ Same</span>`;
+                if (idx === 0) {
+                  statusHtml = `<span class="text-xs font-semibold text-slate-400">Base Month</span>`;
+                } else if (diff > 0) {
+                  statusHtml = `<span class="text-xs font-bold text-rose-600">▲ Up +${pct}%</span>`;
+                } else if (diff < 0) {
+                  statusHtml = `<span class="text-xs font-bold text-emerald-600">▼ Down ${pct}%</span>`;
+                }
+
+                return `
+                  <div class="px-4 py-2.5 flex items-center justify-between hover:bg-slate-50 transition">
+                    <div class="flex items-center gap-3">
+                      <span class="w-9 text-xs font-extrabold text-slate-700">${m}</span>
+                      ${statusHtml}
+                    </div>
+                    <button onclick="openEditMonthRateModal('${selectedRm.id}', ${idx})" class="px-3 py-1 rounded-lg bg-slate-100 hover:bg-indigo-50 hover:text-indigo-700 text-xs font-extrabold text-slate-900 transition flex items-center gap-1.5">
+                      <span>${formatINR(rate)}</span>
+                      <svg class="w-3 h-3 text-slate-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L6.832 19.82a4.5 4.5 0 01-1.897 1.13l-2.685.8.8-2.685a4.5 4.5 0 011.13-1.897L16.863 4.487z" />
+                      </svg>
+                    </button>
+                  </div>
+                `;
+              }).join('')}
+            </div>
+          </div>
+        </div>
+      `;
+    }
+
+    /**
+     * ============================================================================
+     * TAB 5: DAILY TASKS & PRODUCTIVITY TRACKER
+     * ============================================================================
+     */
+    function renderTasks() {
+      const total = state.tasks.length;
+      const completed = state.tasks.filter(t => t.done).length;
+      const pct = total > 0 ? Math.round((completed / total) * 100) : 0;
+
+      return `
+        <div class="space-y-4">
+          <div class="flex items-center justify-between gap-2">
+            <div>
+              <h2 class="text-lg font-extrabold text-slate-900">Daily Tasks & Productivity</h2>
+              <p class="text-xs text-slate-500">Track floor operations, procurement & dispatch priorities</p>
+            </div>
+          </div>
+
+          <!-- Productivity Score Card -->
+          <div class="bg-white rounded-2xl p-4 border border-slate-200/90 shadow-xs">
+            <div class="flex items-center justify-between mb-2">
+              <span class="text-xs font-bold text-slate-600">Today's Execution Score</span>
+              <span class="text-sm font-extrabold text-indigo-600">${completed}/${total} Done (${pct}%)</span>
+            </div>
+            <div class="w-full h-3 bg-slate-100 rounded-full overflow-hidden">
+              <div class="h-full bg-indigo-600 rounded-full transition-all duration-300" style="width: ${pct}%"></div>
+            </div>
+          </div>
+
+          <!-- Add New Task Form -->
+          <form onsubmit="handleAddTask(event)" class="bg-white rounded-2xl p-3 border border-slate-200/90 shadow-xs space-y-2.5">
+            <input
+              type="text"
+              id="new-task-title"
+              required
+              placeholder="Add operational task (e.g., Check 72mm tape batch QC)..."
+              class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs font-medium focus:outline-none focus:ring-2 focus:ring-indigo-500"
+            />
+            <div class="flex items-center gap-2">
+              <select id="new-task-category" class="flex-1 px-2.5 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs font-semibold text-slate-700">
+                <option value="Production">Production</option>
+                <option value="Procurement">Procurement</option>
+                <option value="Dispatch">Dispatch</option>
+                <option value="Accounts">Accounts</option>
+              </select>
+              <select id="new-task-priority" class="flex-1 px-2.5 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs font-semibold text-slate-700">
+                <option value="High">High Priority</option>
+                <option value="Medium" selected>Medium</option>
+                <option value="Low">Low</option>
+              </select>
+              <button type="submit" class="px-4 py-2 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-bold transition">
+                + Add
+              </button>
+            </div>
+          </form>
+
+          <!-- Task Checklist -->
+          <div class="space-y-2">
+            ${state.tasks.length === 0 ? `<p class="text-center text-xs text-slate-400 py-8">No tasks for today. Add one above!</p>` : ''}
+            ${state.tasks.map(task => {
+              const prioColor = task.priority === 'High'
+                ? 'bg-rose-50 text-rose-700 border-rose-200'
+                : task.priority === 'Medium'
+                ? 'bg-amber-50 text-amber-700 border-amber-200'
+                : 'bg-slate-100 text-slate-600 border-slate-200';
+
+              return `
+                <div class="bg-white rounded-2xl p-3.5 border border-slate-200/90 shadow-xs flex items-center justify-between gap-3 ${task.done ? 'opacity-70' : ''}">
+                  <button onclick="toggleTask('${task.id}')" class="flex items-start gap-3 text-left flex-1 min-w-0">
+                    <div class="mt-0.5 w-5 h-5 rounded-lg border-2 flex items-center justify-center shrink-0 transition ${task.done ? 'bg-emerald-500 border-emerald-500 text-white' : 'border-slate-300 bg-white'}">
+                      ${task.done ? `<svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="3" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5" /></svg>` : ''}
+                    </div>
+                    <div class="min-w-0">
+                      <p class="text-xs font-bold text-slate-900 ${task.done ? 'line-through text-slate-500' : ''}">${task.title}</p>
+                      <div class="flex items-center gap-1.5 mt-1">
+                        <span class="text-[10px] font-semibold px-2 py-0.5 rounded bg-indigo-50 text-indigo-700">${task.category}</span>
+                        <span class="text-[10px] font-semibold px-2 py-0.5 rounded border ${prioColor}">${task.priority}</span>
+                      </div>
+                    </div>
+                  </button>
+                  <button onclick="deleteTask('${task.id}')" class="p-1.5 text-slate-400 hover:text-rose-600 rounded-lg transition" aria-label="Delete task">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0" />
+                    </svg>
+                  </button>
+                </div>
+              `;
+            }).join('')}
+          </div>
+        </div>
+      `;
+    }
+
+    /**
+     * ============================================================================
+     * MODALS & INTERACTIVE FORMS
+     * ============================================================================
+     */
+    function openModal(html) {
+      const root = document.getElementById('modal-root');
+      const panel = document.getElementById('modal-panel');
+      panel.innerHTML = html;
+      root.classList.remove('hidden');
+    }
+
+    function closeModal() {
+      document.getElementById('modal-root').classList.add('hidden');
+    }
+
+    // 1. LOG PRODUCTION BATCH MODAL (WITH LIVE COST & CYCLE TIME CALCULATOR)
+    function openProductionModal(preselectSkuId = '') {
+      const defaultSkuId = preselectSkuId || (state.finishedSkus[0] ? state.finishedSkus[0].id : '');
+      const defaultRmId = state.rawMaterials[0] ? state.rawMaterials[0].id : '';
+
+      openModal(`
+        <div class="p-5 space-y-4">
+          <div class="flex items-center justify-between border-b border-slate-100 pb-3">
+            <div>
+              <h3 class="text-base font-extrabold text-slate-900">Log Production Batch</h3>
+              <p class="text-xs text-slate-500">Auto-calculates cycle speed & true product cost</p>
+            </div>
+            <button onclick="closeModal()" class="p-1.5 rounded-lg bg-slate-100 text-slate-600 text-xs font-bold">✕</button>
+          </div>
+
+          <form onsubmit="handleLogProduction(event)" class="space-y-3 text-xs">
+            <div>
+              <label class="block font-bold text-slate-700 mb-1">Finished Product (Size / Grade / Quality)</label>
+              <select id="prod-sku" onchange="updateProdPreview()" required class="w-full p-2.5 bg-slate-50 border border-slate-200 rounded-xl font-semibold">
+                ${state.finishedSkus.map(s => `<option value="${s.id}" ${s.id === defaultSkuId ? 'selected' : ''}>${s.name} — ${s.size} (${s.grade} / ${s.quality})</option>`).join('')}
+              </select>
+            </div>
+
+            <div class="grid grid-cols-2 gap-2.5">
+              <div>
+                <label class="block font-bold text-slate-700 mb-1">Quantity Produced</label>
+                <input type="number" step="any" min="0.01" id="prod-qty" oninput="updateProdPreview()" value="50" required class="w-full p-2.5 bg-slate-50 border border-slate-200 rounded-xl font-bold" />
+              </div>
+              <div>
+                <label class="block font-bold text-slate-700 mb-1">Time Taken (Minutes)</label>
+                <input type="number" step="any" min="1" id="prod-time" oninput="updateProdPreview()" value="75" required class="w-full p-2.5 bg-slate-50 border border-slate-200 rounded-xl font-bold" />
+              </div>
+            </div>
+
+            <div class="grid grid-cols-2 gap-2.5">
+              <div>
+                <label class="block font-bold text-slate-700 mb-1">Raw Material Used</label>
+                <select id="prod-rm" onchange="updateProdPreview()" required class="w-full p-2.5 bg-slate-50 border border-slate-200 rounded-xl font-semibold">
+                  ${state.rawMaterials.map(r => `<option value="${r.id}" ${r.id === defaultRmId ? 'selected' : ''}>${r.name} (${formatINR(getLatestMaterialRate(r))}/${r.unit})</option>`).join('')}
+                </select>
+              </div>
+              <div>
+                <label class="block font-bold text-slate-700 mb-1">Raw Qty Consumed</label>
+                <input type="number" step="any" min="0" id="prod-rm-qty" oninput="updateProdPreview()" value="7" required class="w-full p-2.5 bg-slate-50 border border-slate-200 rounded-xl font-bold" />
+              </div>
+            </div>
+
+            <div class="grid grid-cols-3 gap-2">
+              <div>
+                <label class="block font-bold text-slate-700 mb-1">Labour Cost (₹)</label>
+                <input type="number" step="any" min="0" id="prod-labour" oninput="updateProdPreview()" value="1200" required class="w-full p-2.5 bg-slate-50 border border-slate-200 rounded-xl font-bold" />
+              </div>
+              <div>
+                <label class="block font-bold text-slate-700 mb-1">Transport (₹)</label>
+                <input type="number" step="any" min="0" id="prod-transport" oninput="updateProdPreview()" value="800" required class="w-full p-2.5 bg-slate-50 border border-slate-200 rounded-xl font-bold" />
+              </div>
+              <div>
+                <label class="block font-bold text-slate-700 mb-1">Overhead (₹)</label>
+                <input type="number" step="any" min="0" id="prod-overhead" oninput="updateProdPreview()" value="500" required class="w-full p-2.5 bg-slate-50 border border-slate-200 rounded-xl font-bold" />
+              </div>
+            </div>
+
+            <!-- Live Calculation Box -->
+            <div id="prod-live-preview" class="p-3 rounded-xl bg-indigo-50 border border-indigo-100 space-y-1">
+              <!-- Populated by JS -->
+            </div>
+
+            <button type="submit" class="w-full py-3 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white font-extrabold text-xs shadow-md transition">
+              Save Batch & Update Stock
+            </button>
+          </form>
+        </div>
+      `);
+      updateProdPreview();
+    }
+
+    function updateProdPreview() {
+      const box = document.getElementById('prod-live-preview');
+      if (!box) return;
+      const qty = parseFloat(document.getElementById('prod-qty').value) || 0;
+      const mins = parseFloat(document.getElementById('prod-time').value) || 0;
+      const rmId = document.getElementById('prod-rm').value;
+      const rmQty = parseFloat(document.getElementById('prod-rm-qty').value) || 0;
+      const labour = parseFloat(document.getElementById('prod-labour').value) || 0;
+      const transport = parseFloat(document.getElementById('prod-transport').value) || 0;
+      const overhead = parseFloat(document.getElementById('prod-overhead').value) || 0;
+
+      const rm = state.rawMaterials.find(r => r.id === rmId);
+      const rmRate = rm ? getLatestMaterialRate(rm) : 0;
+      const rawCost = rmQty * rmRate;
+      const totalCost = rawCost + labour + transport + overhead;
+      const unitCost = qty > 0 ? totalCost / qty : 0;
+      const minPerUnit = qty > 0 ? (mins / qty).toFixed(2) : 0;
+
+      box.innerHTML = `
+        <div class="flex justify-between text-indigo-950 font-bold">
+          <span>True Actual Product Rate:</span>
+          <span class="text-sm font-extrabold text-indigo-700">${formatINR(unitCost)} / unit</span>
+        </div>
+        <div class="flex justify-between text-[11px] text-indigo-800">
+          <span>Production Speed: <strong>${minPerUnit} mins/unit</strong></span>
+          <span>Total Batch: <strong>${formatINR(totalCost)}</strong></span>
+        </div>
+      `;
+    }
+
+    function handleLogProduction(e) {
+      e.preventDefault();
+      const skuId = document.getElementById('prod-sku').value;
+      const qtyProduced = parseFloat(document.getElementById('prod-qty').value);
+      const timeMinutes = parseFloat(document.getElementById('prod-time').value);
+      const rawMaterialId = document.getElementById('prod-rm').value;
+      const rawQtyUsed = parseFloat(document.getElementById('prod-rm-qty').value);
+      const labourCost = parseFloat(document.getElementById('prod-labour').value) || 0;
+      const transportCost = parseFloat(document.getElementById('prod-transport').value) || 0;
+      const overheadCost = parseFloat(document.getElementById('prod-overhead').value) || 0;
+
+      const rm = state.rawMaterials.find(r => r.id === rawMaterialId);
+      const sku = state.finishedSkus.find(s => s.id === skuId);
+      if (!rm || !sku) return;
+
+      const rawRateAtTime = getLatestMaterialRate(rm);
+      const totalCost = rawQtyUsed * rawRateAtTime + labourCost + transportCost + overheadCost;
+      const trueUnitCost = qtyProduced > 0 ? totalCost / qtyProduced : sku.landedCost;
+
+      // Update inventory & averages
+      rm.stock = Math.max(0, +(rm.stock - rawQtyUsed).toFixed(2));
+      sku.stock = +(sku.stock + qtyProduced).toFixed(2);
+      sku.landedCost = +trueUnitCost.toFixed(2);
+      sku.avgCycleMinsPerUnit = +(timeMinutes / qtyProduced).toFixed(2);
+
+      state.productionLogs.unshift({
+        id: 'prod-' + Date.now(),
+        date: new Date().toISOString().split('T')[0],
+        skuId,
+        rawMaterialId,
+        rawQtyUsed,
+        rawRateAtTime,
+        qtyProduced,
+        timeMinutes,
+        labourCost,
+        transportCost,
+        overheadCost
+      });
+
+      saveState();
+      closeModal();
+      renderApp();
+      showToast(`Logged ${qtyProduced} ${sku.unit} • True cost ${formatINR(trueUnitCost)}/${sku.unit}`);
+    }
+
+    // 2. LOG DISPATCH / SALE MODAL
+    function openDispatchModal(preselectSkuId = '') {
+      const defaultSkuId = preselectSkuId || (state.finishedSkus[0] ? state.finishedSkus[0].id : '');
+      openModal(`
+        <div class="p-5 space-y-4">
+          <div class="flex items-center justify-between border-b border-slate-100 pb-3">
+            <div>
+              <h3 class="text-base font-extrabold text-slate-900">Log Sale / Dispatch</h3>
+              <p class="text-xs text-slate-500">Deducts finished stock & updates depletion timer</p>
+            </div>
+            <button onclick="closeModal()" class="p-1.5 rounded-lg bg-slate-100 text-slate-600 text-xs font-bold">✕</button>
+          </div>
+          <form onsubmit="handleDispatch(event)" class="space-y-3 text-xs">
+            <div>
+              <label class="block font-bold text-slate-700 mb-1">Select Product SKU</label>
+              <select id="disp-sku" required class="w-full p-2.5 bg-slate-50 border border-slate-200 rounded-xl font-semibold">
+                ${state.finishedSkus.map(s => `<option value="${s.id}" ${s.id === defaultSkuId ? 'selected' : ''}>${s.name} (${s.size} • ${s.grade}) — ${s.stock} ${s.unit} left</option>`).join('')}
+              </select>
+            </div>
+            <div class="grid grid-cols-2 gap-2.5">
+              <div>
+                <label class="block font-bold text-slate-700 mb-1">Dispatched Qty</label>
+                <input type="number" step="any" min="0.1" id="disp-qty" value="25" required class="w-full p-2.5 bg-slate-50 border border-slate-200 rounded-xl font-bold" />
+              </div>
+              <div>
+                <label class="block font-bold text-slate-700 mb-1">Daily Outflow Rate</label>
+                <input type="number" step="any" min="0" id="disp-rate" placeholder="Optional update" class="w-full p-2.5 bg-slate-50 border border-slate-200 rounded-xl font-bold" />
+              </div>
+            </div>
+            <button type="submit" class="w-full py-3 rounded-xl bg-slate-900 hover:bg-slate-800 text-white font-extrabold text-xs transition">
+              Confirm Dispatch
+            </button>
+          </form>
+        </div>
+      `);
+    }
+
+    function handleDispatch(e) {
+      e.preventDefault();
+      const skuId = document.getElementById('disp-sku').value;
+      const qty = parseFloat(document.getElementById('disp-qty').value);
+      const newRate = parseFloat(document.getElementById('disp-rate').value);
+      const sku = state.finishedSkus.find(s => s.id === skuId);
+      if (!sku) return;
+
+      sku.stock = Math.max(0, +(sku.stock - qty).toFixed(2));
+      if (!isNaN(newRate) && newRate > 0) {
+        sku.dailyDispatch = newRate;
+      }
+      saveState();
+      closeModal();
+      renderApp();
+      showToast(`Dispatched ${qty} ${sku.unit} of ${sku.name} (${sku.size})`);
+    }
+
+    // 3. ADD NEW FINISHED SKU MODAL
+    function openAddSkuModal() {
+      openModal(`
+        <div class="p-5 space-y-4">
+          <div class="flex items-center justify-between border-b border-slate-100 pb-3">
+            <h3 class="text-base font-extrabold text-slate-900">Add Product Variant (SKU)</h3>
+            <button onclick="closeModal()" class="p-1.5 rounded-lg bg-slate-100 text-slate-600 text-xs font-bold">✕</button>
+          </div>
+          <form onsubmit="handleAddSku(event)" class="space-y-3 text-xs">
+            <div>
+              <label class="block font-bold text-slate-700 mb-1">Product Name</label>
+              <input type="text" id="sku-name" required placeholder="e.g., Stretch Wrap Film" class="w-full p-2.5 bg-slate-50 border border-slate-200 rounded-xl font-semibold" />
+            </div>
+            <div class="grid grid-cols-3 gap-2">
+              <div>
+                <label class="block font-bold text-slate-700 mb-1">Size</label>
+                <input type="text" id="sku-size" required placeholder="500mm x 300m" class="w-full p-2.5 bg-slate-50 border border-slate-200 rounded-xl font-semibold" />
+              </div>
+              <div>
+                <label class="block font-bold text-slate-700 mb-1">Grade</label>
+                <input type="text" id="sku-grade" required placeholder="23 Micron" class="w-full p-2.5 bg-slate-50 border border-slate-200 rounded-xl font-semibold" />
+              </div>
+              <div>
+                <label class="block font-bold text-slate-700 mb-1">Quality</label>
+                <input type="text" id="sku-quality" required placeholder="Virgin A+" class="w-full p-2.5 bg-slate-50 border border-slate-200 rounded-xl font-semibold" />
+              </div>
+            </div>
+            <div class="grid grid-cols-3 gap-2">
+              <div>
+                <label class="block font-bold text-slate-700 mb-1">Opening Stock</label>
+                <input type="number" step="any" id="sku-stock" value="100" required class="w-full p-2.5 bg-slate-50 border border-slate-200 rounded-xl font-bold" />
+              </div>
+              <div>
+                <label class="block font-bold text-slate-700 mb-1">Unit</label>
+                <select id="sku-unit" class="w-full p-2.5 bg-slate-50 border border-slate-200 rounded-xl font-bold">
+                  ${UNITS.map(u => `<option value="${u}">${u}</option>`).join('')}
+                </select>
+              </div>
+              <div>
+                <label class="block font-bold text-slate-700 mb-1">Daily Outflow</label>
+                <input type="number" step="any" id="sku-dispatch" value="15" required class="w-full p-2.5 bg-slate-50 border border-slate-200 rounded-xl font-bold" />
+              </div>
+            </div>
+            <div class="grid grid-cols-3 gap-2">
+              <div>
+                <label class="block font-bold text-slate-700 mb-1">Actual Cost (₹)</label>
+                <input type="number" step="any" id="sku-cost" value="420" required class="w-full p-2.5 bg-slate-50 border border-slate-200 rounded-xl font-bold" />
+              </div>
+              <div>
+                <label class="block font-bold text-slate-700 mb-1">Selling Price (₹)</label>
+                <input type="number" step="any" id="sku-sell" value="510" required class="w-full p-2.5 bg-slate-50 border border-slate-200 rounded-xl font-bold" />
+              </div>
+              <div>
+                <label class="block font-bold text-slate-700 mb-1">Mins / Unit</label>
+                <input type="number" step="any" id="sku-mins" value="2.5" required class="w-full p-2.5 bg-slate-50 border border-slate-200 rounded-xl font-bold" />
+              </div>
+            </div>
+            <button type="submit" class="w-full py-3 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white font-extrabold text-xs transition">
+              Add Finished SKU
+            </button>
+          </form>
+        </div>
+      `);
+    }
+
+    function handleAddSku(e) {
+      e.preventDefault();
+      state.finishedSkus.unshift({
+        id: 'sku-' + Date.now(),
+        name: document.getElementById('sku-name').value.trim(),
+        size: document.getElementById('sku-size').value.trim(),
+        grade: document.getElementById('sku-grade').value.trim(),
+        quality: document.getElementById('sku-quality').value.trim(),
+        stock: parseFloat(document.getElementById('sku-stock').value) || 0,
+        unit: document.getElementById('sku-unit').value,
+        dailyDispatch: parseFloat(document.getElementById('sku-dispatch').value) || 1,
+        landedCost: parseFloat(document.getElementById('sku-cost').value) || 0,
+        sellingPrice: parseFloat(document.getElementById('sku-sell').value) || 0,
+        avgCycleMinsPerUnit: parseFloat(document.getElementById('sku-mins').value) || 1,
+        primaryRawMaterialId: state.rawMaterials[0] ? state.rawMaterials[0].id : '',
+        rawQtyPerUnit: 0.15
+      });
+      saveState();
+      closeModal();
+      renderApp();
+      showToast('New SKU added to inventory!');
+    }
+
+    // 4. ADD RAW MATERIAL MODAL
+    function openAddRawModal() {
+      openModal(`
+        <div class="p-5 space-y-4">
+          <div class="flex items-center justify-between border-b border-slate-100 pb-3">
+            <h3 class="text-base font-extrabold text-slate-900">Add Raw Material</h3>
+            <button onclick="closeModal()" class="p-1.5 rounded-lg bg-slate-100 text-slate-600 text-xs font-bold">✕</button>
+          </div>
+          <form onsubmit="handleAddRaw(event)" class="space-y-3 text-xs">
+            <div>
+              <label class="block font-bold text-slate-700 mb-1">Material Name</label>
+              <input type="text" id="rm-name" required placeholder="e.g., LLDPE Film Grade Granules" class="w-full p-2.5 bg-slate-50 border border-slate-200 rounded-xl font-semibold" />
+            </div>
+            <div class="grid grid-cols-2 gap-2.5">
+              <div>
+                <label class="block font-bold text-slate-700 mb-1">Current Stock</label>
+                <input type="number" step="any" id="rm-stock" value="500" required class="w-full p-2.5 bg-slate-50 border border-slate-200 rounded-xl font-bold" />
+              </div>
+              <div>
+                <label class="block font-bold text-slate-700 mb-1">Unit</label>
+                <select id="rm-unit" class="w-full p-2.5 bg-slate-50 border border-slate-200 rounded-xl font-bold">
+                  ${UNITS.map(u => `<option value="${u}">${u}</option>`).join('')}
+                </select>
+              </div>
+            </div>
+            <div class="grid grid-cols-2 gap-2.5">
+              <div>
+                <label class="block font-bold text-slate-700 mb-1">Daily Consumption</label>
+                <input type="number" step="any" id="rm-daily" value="60" required class="w-full p-2.5 bg-slate-50 border border-slate-200 rounded-xl font-bold" />
+              </div>
+              <div>
+                <label class="block font-bold text-slate-700 mb-1">Current Rate (₹/unit)</label>
+                <input type="number" step="any" id="rm-rate" value="110" required class="w-full p-2.5 bg-slate-50 border border-slate-200 rounded-xl font-bold" />
+              </div>
+            </div>
+            <button type="submit" class="w-full py-3 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white font-extrabold text-xs transition">
+              Save Raw Material
+            </button>
+          </form>
+        </div>
+      `);
+    }
+
+    function handleAddRaw(e) {
+      e.preventDefault();
+      const rate = parseFloat(document.getElementById('rm-rate').value) || 0;
+      const newRm = {
+        id: 'rm-' + Date.now(),
+        name: document.getElementById('rm-name').value.trim(),
+        stock: parseFloat(document.getElementById('rm-stock').value) || 0,
+        unit: document.getElementById('rm-unit').value,
+        dailyConsumption: parseFloat(document.getElementById('rm-daily').value) || 1,
+        monthlyRates: Array(12).fill(rate)
+      };
+      state.rawMaterials.unshift(newRm);
+      state.selectedRateMaterialId = newRm.id;
+      saveState();
+      closeModal();
+      renderApp();
+      showToast('Raw material added!');
+    }
+
+    // 5. RESTOCK RAW MATERIAL MODAL
+    function openRestockRawModal(rmId) {
+      const rm = state.rawMaterials.find(r => r.id === rmId);
+      if (!rm) return;
+      const currentRate = getLatestMaterialRate(rm);
+      openModal(`
+        <div class="p-5 space-y-4">
+          <div class="flex items-center justify-between border-b border-slate-100 pb-3">
+            <div>
+              <h3 class="text-base font-extrabold text-slate-900">Restock ${rm.name}</h3>
+              <p class="text-xs text-slate-500">Adds stock & updates current month rate if changed</p>
+            </div>
+            <button onclick="closeModal()" class="p-1.5 rounded-lg bg-slate-100 text-slate-600 text-xs font-bold">✕</button>
+          </div>
+          <form onsubmit="handleRestockRaw(event, '${rm.id}')" class="space-y-3 text-xs">
+            <div class="grid grid-cols-2 gap-2.5">
+              <div>
+                <label class="block font-bold text-slate-700 mb-1">Purchased Qty (${rm.unit})</label>
+                <input type="number" step="any" min="0.1" id="restock-qty" value="250" required class="w-full p-2.5 bg-slate-50 border border-slate-200 rounded-xl font-bold" />
+              </div>
+              <div>
+                <label class="block font-bold text-slate-700 mb-1">Purchase Rate (₹/${rm.unit})</label>
+                <input type="number" step="any" min="0" id="restock-rate" value="${currentRate}" required class="w-full p-2.5 bg-slate-50 border border-slate-200 rounded-xl font-bold" />
+              </div>
+            </div>
+            <button type="submit" class="w-full py-3 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-extrabold text-xs transition">
+              Add Stock & Log Rate
+            </button>
+          </form>
+        </div>
+      `);
+    }
+
+    function handleRestockRaw(e, rmId) {
+      e.preventDefault();
+      const rm = state.rawMaterials.find(r => r.id === rmId);
+      if (!rm) return;
+      const qty = parseFloat(document.getElementById('restock-qty').value) || 0;
+      const rate = parseFloat(document.getElementById('restock-rate').value) || 0;
+      rm.stock = +(rm.stock + qty).toFixed(2);
+      if (rate > 0) {
+        rm.monthlyRates[11] = rate;
+      }
+      saveState();
+      closeModal();
+      renderApp();
+      showToast(`Added ${qty} ${rm.unit} to ${rm.name}`);
+    }
+
+    // 6. EDIT MONTHLY RATE MODAL
+    function openEditMonthRateModal(rmId, monthIdx) {
+      const rm = state.rawMaterials.find(r => r.id === rmId);
+      if (!rm) return;
+      openModal(`
+        <div class="p-5 space-y-4">
+          <div class="flex items-center justify-between border-b border-slate-100 pb-3">
+            <div>
+              <h3 class="text-base font-extrabold text-slate-900">Edit ${MONTHS[monthIdx]} Rate</h3>
+              <p class="text-xs text-slate-500">${rm.name} (₹ per ${rm.unit})</p>
+            </div>
+            <button onclick="closeModal()" class="p-1.5 rounded-lg bg-slate-100 text-slate-600 text-xs font-bold">✕</button>
+          </div>
+          <form onsubmit="handleSaveMonthRate(event, '${rm.id}', ${monthIdx})" class="space-y-3 text-xs">
+            <div>
+              <label class="block font-bold text-slate-700 mb-1">Rate in ${MONTHS[monthIdx]} (₹/${rm.unit})</label>
+              <input type="number" step="any" min="0" id="edit-month-rate" value="${rm.monthlyRates[monthIdx]}" required class="w-full p-3 bg-slate-50 border border-slate-200 rounded-xl text-base font-extrabold" />
+            </div>
+            <button type="submit" class="w-full py-3 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white font-extrabold text-xs transition">
+              Update ${MONTHS[monthIdx]} Rate
+            </button>
+          </form>
+        </div>
+      `);
+    }
+
+    function handleSaveMonthRate(e, rmId, monthIdx) {
+      e.preventDefault();
+      const rm = state.rawMaterials.find(r => r.id === rmId);
+      if (!rm) return;
+      const val = parseFloat(document.getElementById('edit-month-rate').value);
+      if (!isNaN(val) && val >= 0) {
+        rm.monthlyRates[monthIdx] = val;
+        saveState();
+        closeModal();
+        renderApp();
+        showToast(`${MONTHS[monthIdx]} rate updated to ${formatINR(val)}`);
+      }
+    }
+
+    // 7. TASK HANDLERS
+    function handleAddTask(e) {
+      e.preventDefault();
+      const titleEl = document.getElementById('new-task-title');
+      const title = titleEl.value.trim();
+      if (!title) return;
+      state.tasks.unshift({
+        id: 't-' + Date.now(),
+        title,
+        category: document.getElementById('new-task-category').value,
+        priority: document.getElementById('new-task-priority').value,
+        done: false
+      });
+      titleEl.value = '';
+      saveState();
+      renderApp();
+      showToast('Task added to checklist');
+    }
+
+    function toggleTask(taskId) {
+      const t = state.tasks.find(x => x.id === taskId);
+      if (t) {
+        t.done = !t.done;
+        saveState();
+        renderApp();
+      }
+    }
+
+    function deleteTask(taskId) {
+      state.tasks = state.tasks.filter(x => x.id !== taskId);
+      saveState();
+      renderApp();
+      showToast('Task removed');
+    }
+
+    // 8. SETTINGS, BACKUP EXPORT/IMPORT & RESET MODAL
+    function openSettingsModal() {
+      openModal(`
+        <div class="p-5 space-y-4">
+          <div class="flex items-center justify-between border-b border-slate-100 pb-3">
+            <div>
+              <h3 class="text-base font-extrabold text-slate-900">Data Backup & Settings</h3>
+              <p class="text-xs text-slate-500">All data saves automatically on your device</p>
+            </div>
+            <button onclick="closeModal()" class="p-1.5 rounded-lg bg-slate-100 text-slate-600 text-xs font-bold">✕</button>
+          </div>
+
+          <div class="space-y-2.5 text-xs">
+            <button onclick="exportBackupJson()" class="w-full py-3 px-4 rounded-xl bg-slate-900 hover:bg-slate-800 text-white font-bold flex items-center justify-between transition">
+              <span>Download JSON Backup File</span>
+              <span>↓ Export</span>
+            </button>
+
+            <label class="w-full py-3 px-4 rounded-xl bg-indigo-50 hover:bg-indigo-100 text-indigo-800 font-bold flex items-center justify-between cursor-pointer transition">
+              <span>Restore From JSON Backup</span>
+              <span>↑ Import</span>
+              <input type="file" accept=".json" onchange="importBackupJson(event)" class="hidden" />
+            </label>
+
+            <div class="pt-3 border-t border-slate-100">
+              <button onclick="resetDemoData()" class="w-full py-3 px-4 rounded-xl bg-rose-50 hover:bg-rose-100 text-rose-700 font-bold flex items-center justify-between transition">
+                <span>Reset to Sample Factory Data</span>
+                <span>↺ Reset</span>
+              </button>
+            </div>
+          </div>
+        </div>
+      `);
+    }
+
+    function exportBackupJson() {
+      const dataStr = 'data:text/json;charset=utf-8,' + encodeURIComponent(JSON.stringify(state, null, 2));
+      const a = document.createElement('a');
+      a.setAttribute('href', dataStr);
+      a.setAttribute('download', `FactoryPulse_Backup_${new Date().toISOString().split('T')[0]}.json`);
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      showToast('Backup file downloaded!');
+    }
+
+    function importBackupJson(event) {
+      const file = event.target.files[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        try {
+          const parsed = JSON.parse(e.target.result);
+          if (parsed && parsed.rawMaterials && parsed.finishedSkus) {
+            state = parsed;
+            saveState();
+            closeModal();
+            renderApp();
+            showToast('Backup restored successfully!');
+          } else {
+            showToast('Invalid backup file format.', 'error');
+          }
+        } catch (err) {
+          showToast('Could not read JSON file.', 'error');
+        }
+      };
+      reader.readAsText(file);
+    }
+
+    function resetDemoData() {
+      state = getDefaultData();
+      saveState();
+      closeModal();
+      renderApp();
+      showToast('Demo data restored!');
+    }
+
+    // Boot App
+    window.addEventListener('DOMContentLoaded', () => {
+      renderApp();
+    });
+  </script>
+</body>
+</html>
